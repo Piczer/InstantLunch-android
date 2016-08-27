@@ -12,9 +12,9 @@
     tools:context="instantlunch.pit.views.RestaurantsActivity"
     tools:showIn="@layout/activity_restaurants">
 
-    <TextView
+    <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Restaurants"/>
+        android:id="@+id/rv_restaurants"/>
 
 </RelativeLayout>

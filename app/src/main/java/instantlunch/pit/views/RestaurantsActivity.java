@@ -1,23 +1,27 @@
 package instantlunch.pit.views;
 
+import android.app.Activity;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
+import instantlunch.pit.API.restaurants.RestaurantsGetAsyncTask;
 import instantlunch.pit.R;
 import instantlunch.pit.controllers.NavigationController;
 
 public class RestaurantsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private RecyclerView restaurantsRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +38,36 @@ public class RestaurantsActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        setTitle("Restauracje");
+
+        restaurantsRecyclerView = (RecyclerView) findViewById(R.id.rv_restaurants);
+        if(isConnected())
+        {
+            RestaurantsGetAsyncTask restaurantsTask = new RestaurantsGetAsyncTask(this,restaurantsRecyclerView);
+            restaurantsTask.execute();
+        }
+    }
+//    @Override
+//    public void processFinish(String response) {
+//        try {
+//            JSONObject jsonObj = new JSONObject(response);
+//            ListView restaurants = (ListView) findViewById(R.id.lv_restaurants);
+//            RestaurantsAdapter arrayAdapter = new RestaurantsAdapter(
+//                    getArrayFromJSON(jsonObj) );
+//
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+    public boolean isConnected() {
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected())
+        {
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -71,4 +105,5 @@ public class RestaurantsActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 }

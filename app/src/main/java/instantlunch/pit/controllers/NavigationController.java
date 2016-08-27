@@ -6,7 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import instantlunch.pit.R;
+import instantlunch.pit.models.AppUser;
 import instantlunch.pit.views.FavouriteRestaurantsActivity;
+import instantlunch.pit.views.LoginActivity;
 import instantlunch.pit.views.RestaurantsActivity;
 import instantlunch.pit.views.ScanCodeActivity;
 
@@ -14,6 +16,8 @@ import instantlunch.pit.views.ScanCodeActivity;
  * Created by impresyjna on 09.05.16.
  */
 public class NavigationController extends AppCompatActivity{
+
+    private AppUser appUser = AppUser.getInstance();
 
     public void itemSelectedOperation(MenuItem item, Activity activity) {
         // Handle navigation view item clicks here.
@@ -26,7 +30,8 @@ public class NavigationController extends AppCompatActivity{
         } else if (id == R.id.nav_restaurants) {
             openIntent(activity, RestaurantsActivity.class);
         }  else if (id == R.id.nav_logout) {
-
+            appUser.setUser(null);
+            openIntent(activity, LoginActivity.class);
         }
     }
 

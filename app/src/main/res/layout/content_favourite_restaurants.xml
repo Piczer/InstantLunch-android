@@ -12,9 +12,9 @@
     tools:context="instantlunch.pit.views.FavouriteRestaurantsActivity"
     tools:showIn="@layout/activity_favourite_restaurants">
 
-    <TextView
+    <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Favourite"/>
+        android:id="@+id/rv_fav_restaurants"/>
 
 </RelativeLayout>

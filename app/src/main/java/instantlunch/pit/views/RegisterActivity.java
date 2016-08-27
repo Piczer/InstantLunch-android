@@ -2,11 +2,8 @@ package instantlunch.pit.views;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,7 +14,9 @@ import android.widget.EditText;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import instantlunch.pit.API.users.RegisterPostAsyncTask;
 import instantlunch.pit.R;
+import instantlunch.pit.models.User;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -80,12 +79,13 @@ public class RegisterActivity extends AppCompatActivity {
      * @param view
      */
     public void register(View view){
-        String login = loginInput.getText().toString();
-        String name = nameInput.getText().toString();
-        String surname = surnameInput.getText().toString();
-        String password = passwordInput.getText().toString();
-        String passwordConfirmation = passwordConfirmationInput.getText().toString();
-        String email = emailInput.getText().toString();
+        User registeringUser = new User();
+        registeringUser.setLogin(loginInput.getText().toString());
+        registeringUser.setName(nameInput.getText().toString());
+        registeringUser.setSurname(surnameInput.getText().toString());
+        registeringUser.setPassword(passwordInput.getText().toString());
+        registeringUser.setPasswordConfirmation(passwordConfirmationInput.getText().toString());
+        registeringUser.setEmail(emailInput.getText().toString());
         if(!validateLogin()){
             return;
         }
@@ -113,6 +113,15 @@ public class RegisterActivity extends AppCompatActivity {
         }
         /** Try to register user if data is valid */
         else {
+            RegisterPostAsyncTask registerTask = new RegisterPostAsyncTask(this);
+            registerTask.execute(
+                    registeringUser.getLogin(),
+                    registeringUser.getPassword(),
+                    registeringUser.getPasswordConfirmation(),
+                    registeringUser.getName(),
+                    registeringUser.getSurname(),
+                    registeringUser.getEmail());
+
             /* RegisterMobile registerMobile = new RegisterMobile();
             registerMobile.setActivity(this);
             registerMobile.execute(login, name, surname, password, passwordConfirmation, email); */
@@ -178,7 +187,7 @@ public class RegisterActivity extends AppCompatActivity {
             inputLayoutPassword.setError(getString(R.string.err_msg_password_empty));
             requestFocus(passwordInput);
             return false;
-        } else if(password.length()<6) {
+        } else if(password.length()<8) {
             inputLayoutPassword.setError(getString(R.string.err_msg_password_short));
             requestFocus(passwordInput);
             return false;

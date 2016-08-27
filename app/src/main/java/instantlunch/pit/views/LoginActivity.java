@@ -2,11 +2,8 @@ package instantlunch.pit.views;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,9 +11,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import instantlunch.pit.API.users.LoginPostAsyncTask;
 import instantlunch.pit.R;
 
 public class LoginActivity extends AppCompatActivity {
@@ -58,17 +53,9 @@ public class LoginActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * Method validates field and call the LoginMobile AsyncTask to connect with server
-     * @param view
-     */
     public void login(View view) {
         String email = emailInput.getText().toString();
         String password = passwordInput.getText().toString();
-        if(!validateEmail())
-        {
-            return;
-        }
         if(!validatePassword())
         {
             return;
@@ -76,9 +63,11 @@ public class LoginActivity extends AppCompatActivity {
         else {
             /* LoginMobile loginMobile = new LoginMobile();
             loginMobile.execute(email, password); */
-            Log.i("About", "Opening about page activity ");
-            Intent intent = new Intent(this, MainActivity.class);
-            this.startActivity(intent);
+//            Log.i("About", "Opening about page activity ");
+            LoginPostAsyncTask loginTask = new LoginPostAsyncTask(this);
+            loginTask.execute(email,password);
+//            Intent intent = new Intent(this, MainActivity.class);
+//            this.startActivity(intent);
         }
     }
 
@@ -112,7 +101,7 @@ public class LoginActivity extends AppCompatActivity {
             inputLayoutPassword.setError(getString(R.string.err_msg_password_empty));
             requestFocus(emailInput);
             return false;
-        } else if(password.length()<6) {
+        } else if(password.length()<3) {
             inputLayoutPassword.setError(getString(R.string.err_msg_password_short));
             requestFocus(emailInput);
             return false;
@@ -122,47 +111,10 @@ public class LoginActivity extends AppCompatActivity {
         return true;
     }
 
-    /**
-     * Validates if email is not empty and is valid
-     * @return
-     */
-    public boolean validateEmail(){
-        String email = emailInput.getText().toString().trim();
-        if (email.isEmpty() || !isEmailValid(email)) {
-            inputLayoutEmail.setError(getString(R.string.err_msg_email));
-            requestFocus(emailInput);
-            return false;
-        } else {
-            inputLayoutEmail.setErrorEnabled(false);
-        }
-        return true;
-    }
 
     private void requestFocus(View view) {
         if (view.requestFocus()) {
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         }
     }
-
-    /**
-     * method is used for checking valid email id format.
-     *
-     * @param email
-     * @return boolean true for valid false for invalid
-     */
-    public static boolean isEmailValid(String email) {
-        boolean isValid = false;
-
-        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
-        CharSequence inputStr = email;
-
-        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(inputStr);
-        if (matcher.matches()) {
-            isValid = true;
-        }
-        return isValid;
-    }
-
-
 }
