@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
+import instantlunch.pit.API.users.LogOutDeleteAsyncTask;
 import instantlunch.pit.R;
 import instantlunch.pit.models.AppUser;
 import instantlunch.pit.views.FavouriteRestaurantsActivity;
@@ -30,8 +31,7 @@ public class NavigationController extends AppCompatActivity{
         } else if (id == R.id.nav_restaurants) {
             openIntent(activity, RestaurantsActivity.class);
         }  else if (id == R.id.nav_logout) {
-            appUser.setUser(null);
-            openIntent(activity, LoginActivity.class);
+            logUserOut(activity);
         }
     }
 
@@ -39,5 +39,17 @@ public class NavigationController extends AppCompatActivity{
         Intent intent = new Intent(activity, windowClass);
         activity.startActivity(intent);
         activity.finish();
+    }
+
+    public void logUserOut(Activity activity){
+        try{
+            LogOutDeleteAsyncTask logoutTask = new LogOutDeleteAsyncTask(this);
+            logoutTask.execute(appUser.getUser().getToken());
+            appUser.setUser(null);
+            openIntent(activity, LoginActivity.class);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
     }
 }

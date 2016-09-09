@@ -236,4 +236,30 @@ public class JSONParser {
         // return JSON Object
         return jObj;
     }
+    public boolean makeHttpDeleteAuthRequest(String url, String userToken) {
+
+        try {
+            urlObj = new URL(url);
+            conn = (HttpURLConnection) urlObj.openConnection();
+            conn.setDoOutput(false);
+            conn.setRequestMethod("DELETE");
+            conn.setRequestProperty("Accept-Charset", charset);
+            conn.setRequestProperty("Authorization", userToken);
+            conn.setConnectTimeout(15000);
+
+            conn.connect();
+
+            int responseCode = conn.getResponseCode();
+            Log.d("JSON Parser", "result code: " + responseCode);
+            if(responseCode >= 200 && responseCode < 300){
+                return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        conn.disconnect();
+
+        return false;
+    }
 }
